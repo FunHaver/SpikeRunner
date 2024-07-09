@@ -1,0 +1,9 @@
+class Main {
+    function void main() {
+        var SpikeRunner game;
+        let game = SpikeRunner.new();
+        do game.run();
+        do game.dispose();
+        return;
+    }
+}

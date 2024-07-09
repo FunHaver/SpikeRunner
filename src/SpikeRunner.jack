@@ -1,0 +1,31 @@
+class SpikeRunner {
+    /** Constructs new Spike Runner game */
+    constructor SpikeRunner new() {
+        return this;
+    }
+
+    /** Frees up memory when done */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void run() {
+        var char key;
+        var boolean quit;
+        let quit = false;
+        while(~quit) {
+            while(key = 0) {
+                let key = Keyboard.keyPressed();
+                do Screen.setColor(true);
+                do Screen.drawCircle(5,5,5);
+            }
+            if(key = 81) {
+                let quit = true;
+                do Screen.clearScreen();
+            }
+        }
+
+        return;
+    }
+}

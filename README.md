@@ -3,6 +3,3 @@ A small game written in the Jack programming language for NAND2TETRIS Part 2, Pr
 
 ## How to Play
 Use the arrow keys to move the ball left and right. Try to reach the hole in the floor before the ball hits the top of the screen. 
-
-## How to Run
-Load the src/ directory into the VM Emulator supplied by the NAND2TETRIS course.
