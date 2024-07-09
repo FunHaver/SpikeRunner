@@ -1,15 +1,20 @@
 class SpikeRunner {
+    field Ball ball; // The player ball
+
     /** Constructs new Spike Runner game */
     constructor SpikeRunner new() {
+        let ball = Ball.new();
         return this;
     }
 
     /** Frees up memory when done */
     method void dispose() {
+        do ball.dispose();
         do Memory.deAlloc(this);
         return;
     }
 
+    /** Runs the entirety of the game */
     method void run() {
         var char key;
         var boolean quit;
@@ -17,8 +22,8 @@ class SpikeRunner {
         while(~quit) {
             while(key = 0) {
                 let key = Keyboard.keyPressed();
-                do Screen.setColor(true);
-                do Screen.drawCircle(5,5,5);
+                do ball.draw();
+                do ball.gravity();
             }
             if(key = 81) {
                 let quit = true;

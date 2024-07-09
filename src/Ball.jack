@@ -1,0 +1,34 @@
+class Ball {
+    field int x, y; // Screen location of center of ball graphic
+    field in size; // radius of ball
+    
+    /** Constructs the player (ball) */
+    constructor Ball new() {
+        let x = 5;
+        let y = 5;
+        let size = 5;
+        do draw();
+        return this;
+    }
+
+    /** Frees up memory taken by ball */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Draws the ball to the screen */
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawCircle(x,y,size);
+        return;
+    }
+
+    /** Gravity on the ball, constant speed downwards */
+    method void gravity() {
+        do Screen.setColor(false);
+        do Screen.drawCircle(x,y,size);
+        let y = y + 1;
+        return;
+    }
+}
