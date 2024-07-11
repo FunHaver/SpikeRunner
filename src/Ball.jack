@@ -1,13 +1,15 @@
 class Ball {
     field int x, y; // Screen location of center of ball graphic
     field in size; // radius of ball
-    
+    field int prevX, prevY; // Screen location of center of ball in previous frame
+
     /** Constructs the player (ball) */
     constructor Ball new() {
         let x = 5;
         let y = 5;
+        let prevX = x;
+        let prevY = y;
         let size = 5;
-        do draw();
         return this;
     }
 
@@ -24,11 +26,47 @@ class Ball {
         return;
     }
 
-    /** Gravity on the ball, constant speed downwards */
-    method void gravity() {
+
+    /** Erases the ball, readies for next frame of animation */
+    method void clear() {
         do Screen.setColor(false);
-        do Screen.drawCircle(x,y,size);
-        let y = y + 1;
+        do Screen.drawCircle(prevX,prevY,size);
+        return;
+    }
+
+    /** Gravity on the ball, constant speed downwards. */
+    method void gravity() {
+        if(y < 100) {
+            let y = y + 5;
+        }
+        return;
+    }
+
+    /** Returns true if if x differs from prevX
+    and/or y differs from prevY */
+    method boolean ballHasMoved() {
+        if((x - prevX) = 0){
+            if((y - prevY) = 0){
+                return false;
+            }
+        }
+        
+        return true;
+        
+    }
+
+    /** Runs through all methods that can move the ball, will refresh
+    ball drawing if x differs from prevX and/or y differs from prevY */
+    method void animate() {
+        let prevX = x;
+        let prevY = y;
+
+        do gravity();
+        if(ballHasMoved()){
+            do clear();
+            do draw();
+            do Sys.wait(100);
+        }
         return;
     }
 }

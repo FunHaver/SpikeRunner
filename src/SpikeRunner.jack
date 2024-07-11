@@ -22,14 +22,13 @@ class SpikeRunner {
         while(~quit) {
             while(key = 0) {
                 let key = Keyboard.keyPressed();
-                do ball.draw();
-                do ball.gravity();
+                do ball.animate();
             }
             if(key = 81) {
                 let quit = true;
                 do Screen.clearScreen();
             }
-        }
+        } 
 
         return;
     }
