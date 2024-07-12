@@ -22,4 +22,8 @@ class Floor {
         do Screen.drawRectangle(x, y, width, height);
         return;
     }
+
+    method int getY(){
+        return y;
+    }
 }

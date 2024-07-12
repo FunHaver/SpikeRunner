@@ -4,6 +4,7 @@ class Ball {
     field int size; // radius of ball
     field int prevX, prevY; // Screen location of center of ball in previous frame
     field int speed;
+    field boolean colliding; //Set to true when touching a floor
     /** Constructs the player (ball) */
     constructor Ball new() {
         let x = 255;
@@ -12,6 +13,7 @@ class Ball {
         let prevY = y;
         let size = 10;
         let speed = 10;
+        let colliding = false;
         do draw();
         return this;
     }
@@ -20,6 +22,10 @@ class Ball {
     method void dispose() {
         do Memory.deAlloc(this);
         return;
+    }
+
+    method int getY() {
+        return y;
     }
 
     /** Draws the ball to the screen */
@@ -57,11 +63,17 @@ class Ball {
         return true;
     }
 
+    /** Detects if the ball is colliding with a floor */
+    method void setColliding(boolean collisionState){
+        let colliding = collisionState;
+        return;
+    }
+
     /** Gravity on the ball, constant speed downwards. */
     method void gravity() {
         var int nextY;
         let nextY = y + 10;
-        if(inBounds(x, nextY)) {
+        if(inBounds(x, nextY) & (~colliding)) {
             let y = y + 10;
         }
         return;

@@ -25,6 +25,13 @@ class SpikeRunner {
             let key = Keyboard.keyPressed();
             do ball.animate(key);
             
+            //Calculate if ball is touching floor
+            if(ball.getY() = floor.getY()){
+                do ball.setColliding(true);
+            } else {
+                do ball.setColliding(false);
+            }
+
             if(key = 81) {
                 let quit = true;
                 do Screen.clearScreen();
