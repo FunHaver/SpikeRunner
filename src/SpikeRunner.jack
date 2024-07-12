@@ -1,15 +1,17 @@
 class SpikeRunner {
     field Ball ball; // The player ball
-
+    field Floor floor; // A floor TODO: convert to array of floors
     /** Constructs new Spike Runner game */
     constructor SpikeRunner new() {
         let ball = Ball.new();
+        let floor = Floor.new();
         return this;
     }
 
     /** Frees up memory when done */
     method void dispose() {
         do ball.dispose();
+        do floor.dispose();
         do Memory.deAlloc(this);
         return;
     }
@@ -22,6 +24,7 @@ class SpikeRunner {
         while(~quit) {
             let key = Keyboard.keyPressed();
             do ball.animate(key);
+            
             if(key = 81) {
                 let quit = true;
                 do Screen.clearScreen();

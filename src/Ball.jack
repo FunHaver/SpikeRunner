@@ -1,3 +1,4 @@
+/** The player entity, a ball */
 class Ball {
     field int x, y; // Screen location of center of ball graphic
     field int size; // radius of ball
