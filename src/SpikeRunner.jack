@@ -20,10 +20,8 @@ class SpikeRunner {
         var boolean quit;
         let quit = false;
         while(~quit) {
-            while(key = 0) {
-                let key = Keyboard.keyPressed();
-                do ball.animate();
-            }
+            let key = Keyboard.keyPressed();
+            do ball.animate(key);
             if(key = 81) {
                 let quit = true;
                 do Screen.clearScreen();

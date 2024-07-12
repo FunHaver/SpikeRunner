@@ -1,15 +1,17 @@
 class Ball {
     field int x, y; // Screen location of center of ball graphic
-    field in size; // radius of ball
+    field int size; // radius of ball
     field int prevX, prevY; // Screen location of center of ball in previous frame
-
+    field int speed;
     /** Constructs the player (ball) */
     constructor Ball new() {
-        let x = 5;
-        let y = 5;
+        let x = 255;
+        let y = 10;
         let prevX = x;
         let prevY = y;
-        let size = 5;
+        let size = 10;
+        let speed = 10;
+        do draw();
         return this;
     }
 
@@ -34,10 +36,52 @@ class Ball {
         return;
     }
 
+    /** Returns true if the entirety of the ball can be rendered within the screen's bounds. 
+    Prevents graphical OOB errors */
+    method boolean inBounds(int nextX, int nextY) {
+        if(nextX < (size + 1)){
+            return false;
+        } 
+        if(nextX > (511 - size)) {
+            return false;
+        }
+
+        if(nextY < size) {
+            return false;
+        }
+        if(nextY > (255 - size)) {
+            return false;
+        }
+
+        return true;
+    }
+
     /** Gravity on the ball, constant speed downwards. */
     method void gravity() {
-        if(y < 100) {
-            let y = y + 5;
+        var int nextY;
+        let nextY = y + 10;
+        if(inBounds(x, nextY)) {
+            let y = y + 10;
+        }
+        return;
+    }
+
+    /** Right movement on ball, constant speed x+*/
+    method void moveRight() {
+        var int nextX;
+        let nextX = x + speed;
+        if(inBounds(nextX, y)){
+            let x = x + speed;
+        }
+        return;
+    }
+
+    /** Left movement on ball, constant speed -x*/
+    method void moveLeft() {
+        var int nextX;
+        let nextX = x - speed;
+        if(inBounds(nextX, y)){
+            let x = x - speed;
         }
         return;
     }
@@ -52,20 +96,28 @@ class Ball {
         }
         
         return true;
-        
     }
 
     /** Runs through all methods that can move the ball, will refresh
     ball drawing if x differs from prevX and/or y differs from prevY */
-    method void animate() {
+    method void animate(int key) {
         let prevX = x;
         let prevY = y;
 
         do gravity();
+
+        if(key = 130) {
+            do moveLeft();
+        }
+
+        if(key = 132) {
+            do moveRight();
+        }
+
         if(ballHasMoved()){
             do clear();
             do draw();
-            do Sys.wait(100);
+            do Sys.wait(33);
         }
         return;
     }
