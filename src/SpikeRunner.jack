@@ -16,6 +16,17 @@ class SpikeRunner {
         return;
     }
 
+    method boolean collisionDetected(Floor fl) {
+        var int bottomBounds;
+        let bottomBounds = (ball.getY() + ball.getSize());
+
+        if(((bottomBounds - 5) < (fl.getY() - 2)) & ((bottomBounds + 5) > (fl.getY() - 2))){
+            return true;
+        }
+        
+        return false;
+    }
+
     /** Runs the entirety of the game */
     method void run() {
         var char key;
@@ -23,14 +34,15 @@ class SpikeRunner {
         let quit = false;
         while(~quit) {
             let key = Keyboard.keyPressed();
-            do ball.animate(key);
-            
             //Calculate if ball is touching floor
-            if(ball.getY() = floor.getY()){
+            if(collisionDetected(floor)){
                 do ball.setColliding(true);
             } else {
                 do ball.setColliding(false);
             }
+            do ball.animate(key);
+            
+
 
             if(key = 81) {
                 let quit = true;

@@ -12,7 +12,7 @@ class Ball {
         let prevX = x;
         let prevY = y;
         let size = 10;
-        let speed = 10;
+        let speed = 7;
         let colliding = false;
         do draw();
         return this;
@@ -26,6 +26,10 @@ class Ball {
 
     method int getY() {
         return y;
+    }
+
+    method int getSize(){
+        return size;
     }
 
     /** Draws the ball to the screen */
@@ -72,9 +76,9 @@ class Ball {
     /** Gravity on the ball, constant speed downwards. */
     method void gravity() {
         var int nextY;
-        let nextY = y + 10;
+        let nextY = y + 5;
         if(inBounds(x, nextY) & (~colliding)) {
-            let y = y + 10;
+            let y = y + 5;
         }
         return;
     }
@@ -130,7 +134,7 @@ class Ball {
         if(ballHasMoved()){
             do clear();
             do draw();
-            do Sys.wait(33);
+            do Sys.wait(22);
         }
         return;
     }
