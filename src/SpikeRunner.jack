@@ -21,7 +21,11 @@ class SpikeRunner {
         let bottomBounds = (ball.getY() + ball.getSize());
 
         if(((bottomBounds - 5) < (fl.getY() - 2)) & ((bottomBounds + 5) > (fl.getY() - 2))){
-            return true;
+
+            if((ball.getX() < fl.getHoleStart()) | (ball.getX() > fl.getHoleEnd())){
+                return true;
+            }
+            
         }
         
         return false;

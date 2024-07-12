@@ -1,12 +1,14 @@
 /** A floor with a hole to drop the ball down into */
 class Floor {
-    field int x, y, width, height;
+    field int x, y, width, height, holeStart, holeSize;
     /** Constructs a floor */
     constructor Floor new() {
         let x = 0;
         let y = 150;
         let width = 511;
         let height = 152;
+        let holeStart = 300;
+        let holeSize = 50;
         do draw();
         return this;
     }
@@ -19,11 +21,20 @@ class Floor {
 
     method void draw() {
         do Screen.setColor(true);
-        do Screen.drawRectangle(x, y, width, height);
+        do Screen.drawRectangle(x, y, (x + holeStart), height);
+        do Screen.drawRectangle((x + holeStart + holeSize), y, width, height);
         return;
     }
 
     method int getY(){
         return y;
+    }
+
+    method int getHoleStart(){
+        return holeStart;
+    }
+
+    method int getHoleEnd(){
+        return holeStart + holeSize;
     }
 }
