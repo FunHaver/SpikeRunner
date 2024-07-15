@@ -81,7 +81,7 @@ class Ball {
     method void gravity() {
         var int nextY;
         let nextY = y + 5;
-        if(inBounds(x, nextY) & (~colliding)) {
+        if(inBounds(x, nextY)) {
             let y = y + 5;
         }
         return;
@@ -124,8 +124,12 @@ class Ball {
     method void animate(int key) {
         let prevX = x;
         let prevY = y;
-
-        do gravity();
+        if(colliding){
+            //Move relative to the floor
+            let y = y - 2; //SAME SPEED AS FLOOR, make variable instead of constant
+        } else {
+            do gravity();
+        }
 
         if(key = 130) {
             do moveLeft();
@@ -138,7 +142,6 @@ class Ball {
         if(ballHasMoved()){
             do clear();
             do draw();
-            do Sys.wait(22);
         }
         return;
     }

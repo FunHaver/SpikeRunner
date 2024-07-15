@@ -1,53 +1,131 @@
 class SpikeRunner {
     field Ball ball; // The player ball
-    field Floor floor; // A floor TODO: convert to array of floors
+    field Array floors; // An array of floor TODO: finish array refactor
+    field int floorArrLength, refreshRate;
     /** Constructs new Spike Runner game */
     constructor SpikeRunner new() {
         let ball = Ball.new();
-        let floor = Floor.new();
+        let floorArrLength = 1;        
+        let floors = Array.new(floorArrLength);
+        let refreshRate = 22;
         return this;
     }
 
     /** Frees up memory when done */
     method void dispose() {
         do ball.dispose();
-        do floor.dispose();
+        do floorsDispose();
         do Memory.deAlloc(this);
         return;
     }
 
-    method boolean collisionDetected(Floor fl) {
-        var int bottomBounds;
+    /* TODO: Finish reimplementation of floor as Array floors */
+    /** Iterate thru floors array and dispose of each obj individually */
+    method void floorsDispose(){
+        var int i;
+        var Floor floor;
+        let i = 0;
+        while (i < floorArrLength) {
+            let floor = floors[i];
+            do floor.dispose();
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method boolean collisionDetected(Array floors) {
+        var int bottomBounds, i;
+        var Floor floor;
+        let i = 0;
         let bottomBounds = (ball.getY() + ball.getSize());
-
-        if(((bottomBounds - 5) < (fl.getY() - 2)) & ((bottomBounds + 5) > (fl.getY() - 2))){
-
-            if((ball.getX() < fl.getHoleStart()) | (ball.getX() > fl.getHoleEnd())){
-                return true;
+        while(i < floorArrLength) {
+            let floor = floors[i];
+            //Collision box for ball relative to floor position (Collision box is defined here)
+            if(((bottomBounds - 5) < (floor.getY() - 2)) & ((bottomBounds + 5) > (floor.getY() - 2))){
+                //If part of floor is not the hole part
+                if((ball.getX() < floor.getHoleStart()) | (ball.getX() > floor.getHoleEnd())){
+                    return true;
+                }
+                
             }
-            
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    method void constructFloor(int floorNum){
+        var Floor floor;
+        let floor = Floor.new();
+        let floors[floorNum] = floor;
+        return;
+    }
+
+    method void despawnFloor(int floorNum){
+        var Floor floor;
+        let floor = floors[floorNum];
+        do floor.dispose();
+        return;
+    }
+
+    method void animateFloors(){
+        var int i;
+        var Floor floor;
+        let i = 0;
+        while(i < floorArrLength){
+            let floor = floors[i];
+            do floor.animate(); 
+            let i = i + 1;
         }
         
-        return false;
+        return;
     }
 
     /** Runs the entirety of the game */
     method void run() {
         var char key;
-        var boolean quit;
+        var boolean quit, beginDespawn, beginSpawn;
+        var int loopCount, floorSpawn, spawnDelay;
+        let floorSpawn = 0;
+        let spawnDelay = 0;
         let quit = false;
+        let beginSpawn = false;
         while(~quit) {
-            let key = Keyboard.keyPressed();
-            //Calculate if ball is touching floor
-            if(collisionDetected(floor)){
-                do ball.setColliding(true);
-            } else {
-                do ball.setColliding(false);
-            }
-            do ball.animate(key);
             
+            let key = Keyboard.keyPressed();
 
+            //Spawn next floor
+            if(spawnDelay = 60) {
+                if(beginDespawn) {
+                    do despawnFloor(floorSpawn);
+                }
 
+                do constructFloor(floorSpawn);
+                let beginSpawn = true;
+                if(floorSpawn = floorArrLength){
+                    let floorSpawn = 0;
+                    let beginDespawn = true;
+                } else {
+                    let floorSpawn = floorSpawn + 1;
+                }
+                let spawnDelay = 0;
+            }
+
+            //Calculate if ball is touching floor
+            if(beginSpawn){
+                if(collisionDetected(floors)){
+                    do ball.setColliding(true);
+                } else {
+                    do ball.setColliding(false);
+                }
+            }
+
+            do ball.animate(key);
+
+            if(beginSpawn){
+                do animateFloors();
+            }
+            do Sys.wait(refreshRate);
+            let spawnDelay = spawnDelay + 1;
             if(key = 81) {
                 let quit = true;
                 do Screen.clearScreen();
