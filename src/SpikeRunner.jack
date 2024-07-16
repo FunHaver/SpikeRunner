@@ -217,10 +217,9 @@ class SpikeRunner {
                     do score.addPoint();
                     do score.draw(0,0);
                 }
+                let spawnDelay = spawnDelay + 1;
             }
-            
             do Sys.wait(refreshRate);
-            let spawnDelay = spawnDelay + 1;
             if(key = 81) {
                 let quit = true;
                 do Screen.clearScreen();
