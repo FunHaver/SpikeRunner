@@ -1,12 +1,15 @@
 class SpikeRunner {
     field Ball ball; // The player ball
-    field Array floors; // An array of floor TODO: finish array refactor
-    field int floorArrLength, refreshRate;
+    field Array floors; // An array of floor
+    field int floorMax; // Max # of floors on screen
+    field int currentFloorAmt; // Number of floors currently contructed - 1 (0 indexed)
+    field int refreshRate; // refresh rate of the game
     /** Constructs new Spike Runner game */
     constructor SpikeRunner new() {
         let ball = Ball.new();
-        let floorArrLength = 1;        
-        let floors = Array.new(floorArrLength);
+        let floorMax = 4;
+        let currentFloorAmt = 0;
+        let floors = Array.new(floorMax);
         let refreshRate = 22;
         return this;
     }
@@ -25,7 +28,7 @@ class SpikeRunner {
         var int i;
         var Floor floor;
         let i = 0;
-        while (i < floorArrLength) {
+        while (i < currentFloorAmt) {
             let floor = floors[i];
             do floor.dispose();
             let i = i + 1;
@@ -38,7 +41,7 @@ class SpikeRunner {
         var Floor floor;
         let i = 0;
         let bottomBounds = (ball.getY() + ball.getSize());
-        while(i < floorArrLength) {
+        while(i < currentFloorAmt) {
             let floor = floors[i];
             //Collision box for ball relative to floor position (Collision box is defined here)
             if(((bottomBounds - 5) < (floor.getY() - 2)) & ((bottomBounds + 5) > (floor.getY() - 2))){
@@ -57,13 +60,7 @@ class SpikeRunner {
         var Floor floor;
         let floor = Floor.new();
         let floors[floorNum] = floor;
-        return;
-    }
-
-    method void despawnFloor(int floorNum){
-        var Floor floor;
-        let floor = floors[floorNum];
-        do floor.dispose();
+        let currentFloorAmt = currentFloorAmt + 1;
         return;
     }
 
@@ -71,7 +68,7 @@ class SpikeRunner {
         var int i;
         var Floor floor;
         let i = 0;
-        while(i < floorArrLength){
+        while(i < currentFloorAmt){
             let floor = floors[i];
             do floor.animate(); 
             let i = i + 1;
@@ -80,38 +77,49 @@ class SpikeRunner {
         return;
     }
 
+    /** Will dispose of floor that has reached a specific Y value */
+    method void respawnAtMaxHeight(){
+        var int i;
+        var Floor floor;
+        let i = 0;
+        while(i < currentFloorAmt) {
+            let floor = floors[i];
+            if(floor.getY() < 30) {
+                do floor.respawn();
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
     /** Runs the entirety of the game */
     method void run() {
         var char key;
-        var boolean quit, beginDespawn, beginSpawn;
+        var boolean quit;
         var int loopCount, floorSpawn, spawnDelay;
         let floorSpawn = 0;
         let spawnDelay = 0;
         let quit = false;
-        let beginSpawn = false;
         while(~quit) {
             
             let key = Keyboard.keyPressed();
 
             //Spawn next floor
-            if(spawnDelay = 60) {
-                if(beginDespawn) {
-                    do despawnFloor(floorSpawn);
-                }
-
-                do constructFloor(floorSpawn);
-                let beginSpawn = true;
-                if(floorSpawn = floorArrLength){
+            if(spawnDelay = 30) {
+               
+                do respawnAtMaxHeight();
+                
+                if(currentFloorAmt = floorMax){
                     let floorSpawn = 0;
-                    let beginDespawn = true;
                 } else {
+                    do constructFloor(floorSpawn);
                     let floorSpawn = floorSpawn + 1;
                 }
                 let spawnDelay = 0;
             }
 
             //Calculate if ball is touching floor
-            if(beginSpawn){
+            if(currentFloorAmt > 0){
                 if(collisionDetected(floors)){
                     do ball.setColliding(true);
                 } else {
@@ -121,9 +129,10 @@ class SpikeRunner {
 
             do ball.animate(key);
 
-            if(beginSpawn){
+            if(currentFloorAmt > 0){
                 do animateFloors();
             }
+
             do Sys.wait(refreshRate);
             let spawnDelay = spawnDelay + 1;
             if(key = 81) {

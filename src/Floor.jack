@@ -35,6 +35,15 @@ class Floor {
         return;
     }
 
+    method void respawn(){
+        let prevX = x;
+        let prevY = y;
+        do clear();
+        let y = 253;
+        let height = y + 2;
+        return;
+    }
+
     method int getY(){
         return y;
     }
