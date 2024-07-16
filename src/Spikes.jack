@@ -12,6 +12,10 @@ class Spikes {
         return;
     }
 
+    method int getKillBox(){
+        return killBox;
+    }
+
     /** Generated using https://nand2tetris.github.io/web-ide/bitmap */
     method void draw(int location) {
         var int memAddress, spikeRepeat; 

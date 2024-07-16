@@ -6,6 +6,7 @@ class SpikeRunner {
     field int floorMax; // Max # of floors on screen
     field int currentFloorAmt; // Number of floors currently contructed - 1 (0 indexed)
     field int refreshRate; // refresh rate of the game
+    field boolean gameEnded; //Game over boolean
     /** Constructs new Spike Runner game */
     constructor SpikeRunner new() {
         let ball = Ball.new();
@@ -15,6 +16,7 @@ class SpikeRunner {
         let currentFloorAmt = 0;
         let floors = Array.new(floorMax);
         let refreshRate = 22;
+        let gameEnded = false;
         return this;
     }
 
@@ -42,7 +44,7 @@ class SpikeRunner {
     }
 
     /** Detects ball collision with floor */
-    method boolean collisionDetected(Array floors) {
+    method boolean floorDetected(Array floors) {
         var int bottomBounds, i;
         var Floor floor;
         let i = 0;
@@ -60,6 +62,14 @@ class SpikeRunner {
             let i = i + 1;
         }
         return false;
+    }
+
+    method boolean spikeDetected() {
+        if(ball.getY() < spikeWall.getKillBox()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /** Calculates a valid hole position for rendering in-bounds */
@@ -100,7 +110,7 @@ class SpikeRunner {
         return;
     }
 
-    /** Will dispose of floor that has reached a specific Y value */
+    /** Will respawn floor that has reached a specific Y value */
     method void respawnAtMaxHeight(){
         var int i;
         var Floor floor;
@@ -115,6 +125,20 @@ class SpikeRunner {
         return;
     }
 
+    method void gameOver(){
+        let gameEnded = true;
+        do Output.moveCursor(10,27);
+        do Output.printString("GAME OVER");
+        do Output.moveCursor(11, 27);
+        do Output.printString("SCORE: ");
+        do Output.printString("100");
+        do Output.moveCursor(13,23);
+        do Output.printString("PRESS 'R' TO RESET");
+        do Output.moveCursor(14, 23);
+        do Output.printString("PRESS 'Q' TO QUIT");
+        return;
+    }
+
     /** Runs the entirety of the game */
     method void run() {
         var char key;
@@ -126,34 +150,44 @@ class SpikeRunner {
         while(~quit) {
             
             let key = Keyboard.keyPressed();
+            //Calculate if ball is touching spikes
+            if(spikeDetected()) {
+                if(~gameEnded){
+                    do gameOver();
+                }
+            }
 
-            //Spawn next floor
-            if(spawnDelay = 29) {
-               
-                do respawnAtMaxHeight();
+            if(~gameEnded){         
+                //Spawn next floor
+                if(spawnDelay = 29) {
                 
-                if(currentFloorAmt = floorMax){
-                    let floorSpawn = 0;
-                } else {
-                    do constructFloor(floorSpawn);
-                    let floorSpawn = floorSpawn + 1;
+                    do respawnAtMaxHeight();
+                    
+                    if(currentFloorAmt = floorMax){
+                        let floorSpawn = 0;
+                    } else {
+                        do constructFloor(floorSpawn);
+                        let floorSpawn = floorSpawn + 1;
+                    }
+                    let spawnDelay = 0;
                 }
-                let spawnDelay = 0;
-            }
 
-            //Calculate if ball is touching floor
-            if(currentFloorAmt > 0){
-                if(collisionDetected(floors)){
-                    do ball.setColliding(true);
-                } else {
-                    do ball.setColliding(false);
+
+
+                //Calculate if ball is touching floor
+                if(currentFloorAmt > 0){
+                    if(floorDetected(floors)){
+                        do ball.setColliding(true);
+                    } else {
+                        do ball.setColliding(false);
+                    }
                 }
-            }
 
-            do ball.animate(key);
+                do ball.animate(key);
 
-            if(currentFloorAmt > 0){
-                do animateFloors();
+                if(currentFloorAmt > 0){
+                    do animateFloors();
+                }
             }
 
             do Sys.wait(refreshRate);
