@@ -1,0 +1,40 @@
+class Spikes {
+    field int killBox; //The y position where the kill box exists
+
+    constructor Spikes new(){
+        let killBox = 15;
+        do draw(0);
+        return this;
+    }
+
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Generated using https://nand2tetris.github.io/web-ide/bitmap */
+    method void draw(int location) {
+        var int memAddress, spikeRepeat; 
+        let memAddress = 16384+location;
+        let spikeRepeat = 0;
+        while(spikeRepeat < 33){
+            do Memory.poke(memAddress + spikeRepeat, -16383);
+            do Memory.poke(memAddress + spikeRepeat +32, 16385);
+            do Memory.poke(memAddress + spikeRepeat +64, 8194);
+            do Memory.poke(memAddress + spikeRepeat +96, 8194);
+            do Memory.poke(memAddress + spikeRepeat +128, 4100);
+            do Memory.poke(memAddress + spikeRepeat +160, 4100);
+            do Memory.poke(memAddress + spikeRepeat +192, 2056);
+            do Memory.poke(memAddress + spikeRepeat +224, 2056);
+            do Memory.poke(memAddress + spikeRepeat +256, 1040);
+            do Memory.poke(memAddress + spikeRepeat +288, 1040);
+            do Memory.poke(memAddress + spikeRepeat +320, 544);
+            do Memory.poke(memAddress + spikeRepeat +352, 544);
+            do Memory.poke(memAddress + spikeRepeat +384, 320);
+            do Memory.poke(memAddress + spikeRepeat +416, 320);
+            do Memory.poke(memAddress + spikeRepeat +448, 128);
+            let spikeRepeat = spikeRepeat + 1;
+        }
+        return;
+    }
+}

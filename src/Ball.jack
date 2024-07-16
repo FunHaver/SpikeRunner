@@ -8,7 +8,7 @@ class Ball {
     /** Constructs the player (ball) */
     constructor Ball new() {
         let x = 255;
-        let y = 10;
+        let y = 25;
         let prevX = x;
         let prevY = y;
         let size = 10;

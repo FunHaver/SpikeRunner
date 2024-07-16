@@ -2,6 +2,7 @@ class SpikeRunner {
     field Ball ball; // The player ball
     field Array floors; // An array of floor
     field Random random; //A random number generator
+    field Spikes spikeWall; //The spike wall that ends the game
     field int floorMax; // Max # of floors on screen
     field int currentFloorAmt; // Number of floors currently contructed - 1 (0 indexed)
     field int refreshRate; // refresh rate of the game
@@ -9,6 +10,7 @@ class SpikeRunner {
     constructor SpikeRunner new() {
         let ball = Ball.new();
         let random = Random.new();
+        let spikeWall = Spikes.new();
         let floorMax = 4;
         let currentFloorAmt = 0;
         let floors = Array.new(floorMax);
@@ -19,7 +21,9 @@ class SpikeRunner {
     /** Frees up memory when done */
     method void dispose() {
         do ball.dispose();
+        do random.dispose();
         do floorsDispose();
+        do spikeWall.dispose();
         do Memory.deAlloc(this);
         return;
     }
@@ -124,7 +128,7 @@ class SpikeRunner {
             let key = Keyboard.keyPressed();
 
             //Spawn next floor
-            if(spawnDelay = 30) {
+            if(spawnDelay = 29) {
                
                 do respawnAtMaxHeight();
                 
