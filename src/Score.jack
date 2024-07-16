@@ -31,9 +31,9 @@ class Score {
         return input + 48;
     }
 
-    method void draw(int cursX, int cursY) {
+    method void draw(int row, int column) {
         var int tempScore;
-        do Output.moveCursor(cursX,cursY);
+        do Output.moveCursor(row,column);
         if(scoreCount < 10){
             do Output.printChar(intToChar(scoreCount));
         }

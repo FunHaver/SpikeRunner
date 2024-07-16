@@ -27,8 +27,31 @@ class SpikeRunner {
         do ball.dispose();
         do random.dispose();
         do floorsDispose();
+        do floors.dispose();
         do spikeWall.dispose();
+        do score.dispose();
         do Memory.deAlloc(this);
+        return;
+    }
+
+    method void reset(){
+        //Get rid of the old
+        do ball.dispose();
+        do random.dispose();
+        do floorsDispose();
+        let currentFloorAmt = 0;
+        do spikeWall.dispose();
+        do score.dispose();
+
+        do Screen.clearScreen();
+
+        //Construct the new
+        let ball = Ball.new();
+        let random = Random.new();
+        let spikeWall = Spikes.new();
+        let score = Score.new();
+        let gameEnded = false;
+
         return;
     }
 
@@ -201,6 +224,12 @@ class SpikeRunner {
             if(key = 81) {
                 let quit = true;
                 do Screen.clearScreen();
+            }
+
+            if(key = 82) {
+                let floorSpawn = 0;
+                let spawnDelay = 0;
+                do reset();
             }
         } 
 
