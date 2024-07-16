@@ -1,0 +1,63 @@
+class Score {
+    field int scoreCount;
+    field Random random; //Singleton????
+    constructor Score new() {
+        let scoreCount = 0;
+        let random = Random.new();
+        return this;
+    }
+
+    method void dispose(){
+        do random.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void addPoint() {
+        let scoreCount = scoreCount + 1;
+        return;
+    }
+
+    method int getScore() {
+        return scoreCount;
+    }
+
+    method void resetScore() {
+        let scoreCount = 0;
+        return;
+    }
+
+    method char intToChar(int input) {
+        return input + 48;
+    }
+
+    method void draw(int cursX, int cursY) {
+        var int tempScore;
+        do Output.moveCursor(cursX,cursY);
+        if(scoreCount < 10){
+            do Output.printChar(intToChar(scoreCount));
+        }
+
+        if((scoreCount > 10) & (scoreCount < 100)){
+            do Output.printChar(intToChar(scoreCount / 10));
+            do Output.printChar(intToChar(random.mod(scoreCount, 10)));
+        }
+
+        if((scoreCount > 100) & (scoreCount < 1000)){
+            do Output.printChar(intToChar(scoreCount / 100));
+            let tempScore = random.mod(scoreCount, 100);
+            do Output.printChar(intToChar(tempScore / 10));
+            do Output.printChar(intToChar(random.mod(scoreCount, 10)));
+        }
+
+        if((scoreCount > 1000) & (scoreCount < 10000)){
+            do Output.printChar(intToChar(scoreCount/1000));
+            let tempScore = random.mod(scoreCount, 1000);
+            do Output.printChar(intToChar(tempScore / 100));
+            let tempScore = random.mod(scoreCount, 100);
+            do Output.printChar(intToChar(tempScore / 10));
+            do Output.printChar(intToChar(random.mod(scoreCount, 10)));
+        }
+        return;
+    }
+}

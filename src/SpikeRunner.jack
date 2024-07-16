@@ -6,6 +6,7 @@ class SpikeRunner {
     field int floorMax; // Max # of floors on screen
     field int currentFloorAmt; // Number of floors currently contructed - 1 (0 indexed)
     field int refreshRate; // refresh rate of the game
+    field Score score; //Score tracker
     field boolean gameEnded; //Game over boolean
     /** Constructs new Spike Runner game */
     constructor SpikeRunner new() {
@@ -16,6 +17,7 @@ class SpikeRunner {
         let currentFloorAmt = 0;
         let floors = Array.new(floorMax);
         let refreshRate = 22;
+        let score = Score.new();
         let gameEnded = false;
         return this;
     }
@@ -131,7 +133,7 @@ class SpikeRunner {
         do Output.printString("GAME OVER");
         do Output.moveCursor(11, 27);
         do Output.printString("SCORE: ");
-        do Output.printString("100");
+        do score.draw(11, 33);
         do Output.moveCursor(13,23);
         do Output.printString("PRESS 'R' TO RESET");
         do Output.moveCursor(14, 23);
@@ -188,8 +190,12 @@ class SpikeRunner {
                 if(currentFloorAmt > 0){
                     do animateFloors();
                 }
+                if(random.mod(spawnDelay, 2) = 0){
+                    do score.addPoint();
+                    do score.draw(0,0);
+                }
             }
-
+            
             do Sys.wait(refreshRate);
             let spawnDelay = spawnDelay + 1;
             if(key = 81) {
