@@ -1,0 +1,70 @@
+/** This class will implement a Linear Congruential Generator for pseudo-random number generation.
+    https://en.wikipedia.org/wiki/Linear_congruential_generator
+    It looks random enough for my game :) */
+
+class Random {
+    field Array generatedValues;
+    field int idx, maxNumGeneration;
+    field boolean generating;
+
+    constructor Random new(){
+        let maxNumGeneration = 50; //Guaranteed to repeat generations in order after times generated.
+        let generatedValues = Array.new(maxNumGeneration);
+        let idx = 0;
+        let generating = true;
+        return this;
+    }
+
+    method int mod(int c, int m){
+        var int difference, result;
+
+        if(c < m){
+            return c;
+        }
+
+        let difference = c;
+
+        while(difference > m){
+            let difference = difference - m;
+        }
+
+        if(difference = m){
+            let result = 0;
+        } else {
+            let result = difference;
+        }
+
+        return result;
+    }
+
+    /** Linear congruential generator implementation (X{n+1}=(a * X{n}+c){mod {m}})
+    Where m = 2^9, c = 3, a = 5, X{0} = 19 */
+    method int lcg(){
+        var int currentInSeq;
+        var int gonnaModThis, result;
+
+        if(generating){
+            //X{n}
+            if(idx = 0){
+                let currentInSeq = 19;
+            } else {
+                let currentInSeq = generatedValues[idx - 1];
+            }
+
+            //a * X{n} + c
+            let gonnaModThis = ((5 * currentInSeq) + 3);
+            //mod
+            let result = mod(gonnaModThis, 512);
+            let generatedValues[idx] = result;
+        } else {
+            let result = generatedValues[idx];
+        }
+
+        let idx = idx + 1;
+        if(idx = maxNumGeneration){
+            let generating = false;
+            let idx = 0;
+        }
+        return result;
+    }
+}

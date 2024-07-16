@@ -1,16 +1,17 @@
 /** A floor with a hole to drop the ball down into */
 class Floor {
     field int x, y, width, height, prevX, prevY, holeStart, holeSize;
+    field Random rng; //pseudorandom number generator
     /** Constructs a floor */
-    constructor Floor new() {
+    constructor Floor new(int holePos) {
         let x = 0;
         let prevX = x;
         let y = 253;
         let prevY = y;
         let width = 511;
         let height = 255;
-        let holeStart = 300;
         let holeSize = 50;
+        let holeStart = holePos;
         do draw();
         return this;
     }
@@ -35,12 +36,15 @@ class Floor {
         return;
     }
 
-    method void respawn(){
+    /** Resets the position of the floor to the bottom of the screen */
+
+    method void respawn(int holePos){
         let prevX = x;
         let prevY = y;
         do clear();
         let y = 253;
         let height = y + 2;
+        let holeStart = holePos;
         return;
     }
 

@@ -1,12 +1,14 @@
 class SpikeRunner {
     field Ball ball; // The player ball
     field Array floors; // An array of floor
+    field Random random; //A random number generator
     field int floorMax; // Max # of floors on screen
     field int currentFloorAmt; // Number of floors currently contructed - 1 (0 indexed)
     field int refreshRate; // refresh rate of the game
     /** Constructs new Spike Runner game */
     constructor SpikeRunner new() {
         let ball = Ball.new();
+        let random = Random.new();
         let floorMax = 4;
         let currentFloorAmt = 0;
         let floors = Array.new(floorMax);
@@ -22,7 +24,6 @@ class SpikeRunner {
         return;
     }
 
-    /* TODO: Finish reimplementation of floor as Array floors */
     /** Iterate thru floors array and dispose of each obj individually */
     method void floorsDispose(){
         var int i;
@@ -36,6 +37,7 @@ class SpikeRunner {
         return;
     }
 
+    /** Detects ball collision with floor */
     method boolean collisionDetected(Array floors) {
         var int bottomBounds, i;
         var Floor floor;
@@ -56,14 +58,31 @@ class SpikeRunner {
         return false;
     }
 
+    /** Calculates a valid hole position for rendering in-bounds */
+    method int generateHoleStartPosition(){
+        var int randomNum, holeEnd;
+        let randomNum = random.lcg();
+        let holeEnd = randomNum + 50;
+
+        if(randomNum < 5) {
+            let randomNum = randomNum + 5;
+        }
+        if(holeEnd > 511){
+            let randomNum = randomNum - 55;
+        }
+        return randomNum;
+    }
+
+    /** Performs initial construction of floor object */
     method void constructFloor(int floorNum){
         var Floor floor;
-        let floor = Floor.new();
+        let floor = Floor.new(generateHoleStartPosition());
         let floors[floorNum] = floor;
         let currentFloorAmt = currentFloorAmt + 1;
         return;
     }
 
+    /** Triggers the animate method for each floor object */
     method void animateFloors(){
         var int i;
         var Floor floor;
@@ -85,7 +104,7 @@ class SpikeRunner {
         while(i < currentFloorAmt) {
             let floor = floors[i];
             if(floor.getY() < 30) {
-                do floor.respawn();
+                do floor.respawn(generateHoleStartPosition());
             }
             let i = i + 1;
         }
